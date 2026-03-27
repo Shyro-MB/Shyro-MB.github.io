@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHIRO / Reverse Engineering</title>
+  <meta name="description" content="Portfolio minimaliste (SHIRO) : reverse engineering Android, firmware/UEFI, tooling, writeups. Design propre, approche méthodique." />
+
+  <meta property="og:title" content="SHIRO / Reverse Engineering" />
+  <meta property="og:description" content="Android RE • Firmware/UEFI • Tooling • Writeups — Portfolio minimaliste." />
+  <meta property="og:type" content="website" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <a class="skip-link" href="#content">Aller au contenu</a>
+
+  <header class="header" id="top">
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="brand" href="#top" aria-label="Retour en haut">
+        <span class="brand-mark">SHIRO</span>
+        <span class="brand-sub">reverse • design • systems</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu">
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+        <span class="nav-toggle__line"></span>
+        <span class="sr-only">Ouvrir le menu</span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a class="nav-link" href="#projects">Projets</a></li>
+        <li><a class="nav-link" href="#about">À propos</a></li>
+        <li><a class="nav-link" href="#work">Design</a></li>
+        <li><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Introduction">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-bg__inner"></div>
+      </div>
+
+      <div class="container hero-inner">
+        <div class="hero-left">
+          <div class="pill">
+            <span class="dot"></span>
+            <span>SHIRO — minimal • precise • documented</span>
+          </div>
+
+          <h1 class="title">
+            Reverse Engineering
+            <span class="title-accent">+ Design Mindset</span>
+          </h1>
+
+          <p class="lead">
+            J’analyse et je documente : APK protégées (Android), instrumentation (Frida), et surfaces firmware/UEFI.
+            Le style est minimal. Le contenu est solide.
+          </p>
+
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#projects">Voir les projets</a>
+            <a class="btn btn-ghost" href="assets/files/CV.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+          </div>
+
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-top">
+                <span class="metric-num">RE</span>
+                <span class="metric-tag">focus</span>
+              </div>
+              <p class="metric-label">Android & firmware</p>
+            </div>
+
+            <div class="metric">
+              <div class="metric-top">
+                <span class="metric-num">DOC</span>
+                <span class="metric-tag">mindset</span>
+              </div>
+              <p class="metric-label">Writeups clairs</p>
+            </div>
+
+            <div class="metric">
+              <div class="metric-top">
+                <span class="metric-num">SHIRO</span>
+                <span class="metric-tag">style</span>
+              </div>
+              <p class="metric-label">Minimal & propre</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="terminal card reveal">
+            <div class="terminal-top">
+              <span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span>
+              <span class="terminal-title">session.log</span>
+            </div>
+            <pre class="terminal-body"><code>
+$ whoami
+shiro
+
+$ scope
+android_re, firmware, tooling, documentation
+
+$ principles
+observe -> extract -> understand -> report
+
+$ now
+build portfolio + publish writeups
+            </code></pre>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini card reveal">
+              <p class="mini-k">Tooling</p>
+              <p class="mini-v">scripts Python, workflows</p>
+            </div>
+            <div class="mini card reveal">
+              <p class="mini-k">RE</p>
+              <p class="mini-v">smali, native, packers</p>
+            </div>
+            <div class="mini card reveal">
+              <p class="mini-k">Design</p>
+              <p class="mini-v">branding, UI, motion</p>
+            </div>
+            <div class="mini card reveal">
+              <p class="mini-k">Docs</p>
+              <p class="mini-v">writeups, PDFs, notes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <span class="scroll-line"></span>
+        <span class="scroll-text">scroll</span>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="h2">Projets</h2>
+          <p class="sub">3 piliers. Tu peux en ajouter 20 derrière sans casser le style.</p>
+        </div>
+
+        <div class="grid projects">
+          <article class="project card reveal">
+            <div class="project-top">
+              <span class="badge">Android</span>
+              <span class="badge badge-outline">Frida</span>
+              <span class="badge badge-outline">Smali</span>
+            </div>
+            <h3 class="h3">Android Reverse Engineering</h3>
+            <p class="muted">
+              Analyse d’APK, protections (packers), instrumentation dynamique, extraction & validation de signaux.
+              Tooling pour automatiser l’observation.
+            </p>
+            <div class="project-meta">
+              <span class="chip">workflow</span>
+              <span class="chip">writeup</span>
+              <span class="chip">scripts</span>
+            </div>
+            <a class="link" href="projects/android-reverse.html">Ouvrir le dossier →</a>
+          </article>
+
+          <article class="project card reveal">
+            <div class="project-top">
+              <span class="badge">Firmware</span>
+              <span class="badge badge-outline">UEFI</span>
+              <span class="badge badge-outline">Ghidra</span>
+            </div>
+            <h3 class="h3">UEFI / BIOS Internals</h3>
+            <p class="muted">
+              Compréhension des firmwares UEFI, variables NVRAM, chaîne de boot, surfaces de confiance,
+              et méthodes d’audit.
+            </p>
+            <div class="project-meta">
+              <span class="chip">threat model</span>
+              <span class="chip">artifacts</span>
+              <span class="chip">notes</span>
+            </div>
+            <a class="link" href="projects/uefi-bios.html">Lire l’analyse →</a>
+          </article>
+
+          <article class="project card reveal">
+            <div class="project-top">
+              <span class="badge">Pre-boot</span>
+              <span class="badge badge-outline">Defense</span>
+              <span class="badge badge-outline">Chain-of-trust</span>
+            </div>
+            <h3 class="h3">Pre-Boot Spoofer Analysis</h3>
+            <p class="muted">
+              Étude défensive : surfaces d’attaque pre-boot, persistance firmware, signaux de détection,
+              et mitigations.
+            </p>
+            <div class="project-meta">
+              <span class="chip">mitigations</span>
+              <span class="chip">detection</span>
+              <span class="chip">report</span>
+            </div>
+            <a class="link" href="projects/preboot-spoofer.html">Voir le rapport →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="h2">À propos</h2>
+          <p class="sub">Méthode, rigueur, et un goût pour le design propre.</p>
+        </div>
+
+        <div class="two-col">
+          <div class="card reveal pad">
+            <h3 class="h3">Approche</h3>
+            <p class="muted">
+              J’avance comme une enquête : je capture le comportement, je réduis le bruit,
+              j’isole les points clés, puis je documente clairement.
+            </p>
+            <ul class="list">
+              <li><span class="k">Observe</span> → logs, traces, diff</li>
+              <li><span class="k">Extract</span> → classes, strings, calls, assets</li>
+              <li><span class="k">Understand</span> → modèles, contrôles, flux</li>
+              <li><span class="k">Report</span> → writeup, preuves, mitigations</li>
+            </ul>
+          </div>
+
+          <div class="card reveal pad">
+            <h3 class="h3">Compétences</h3>
+            <div class="tags">
+              <span class="tag">Android RE</span>
+              <span class="tag">Smali</span>
+              <span class="tag">Frida</span>
+              <span class="tag">LSPatch</span>
+              <span class="tag">Ghidra</span>
+              <span class="tag">UEFI</span>
+              <span class="tag">Python tooling</span>
+              <span class="tag">Documentation</span>
+              <span class="tag">UI / Branding</span>
+              <span class="tag">Motion design</span>
+            </div>
+
+            <div class="note">
+              <p class="muted">
+                Le design ici n’est pas “gimmick” : c’est juste une façon de livrer des infos proprement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESIGN / FUTURE -->
+    <section id="work" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="h2">Design (à venir)</h2>
+          <p class="sub">Tu pourras drop tes projets graphisme/motion ici sans casser le thème.</p>
+        </div>
+
+        <div class="grid work">
+          <div class="card reveal pad">
+            <h3 class="h3">Branding</h3>
+            <p class="muted">Identités minimalistes, typographie, systèmes de grille.</p>
+          </div>
+          <div class="card reveal pad">
+            <h3 class="h3">UI / Motion</h3>
+            <p class="muted">Micro-interactions, transitions propres, compos UI.</p>
+          </div>
+          <div class="card reveal pad">
+            <h3 class="h3">E-commerce</h3>
+            <p class="muted">Pages produit, conversions, assets, cohérence visuelle.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2 class="h2">Contact</h2>
+          <p class="sub">Simple. Direct. Pas de blabla.</p>
+        </div>
+
+        <div class="contact card reveal pad">
+          <div class="contact-row">
+            <span class="contact-k">GitHub</span>
+            <a class="link" href="#" target="_blank" rel="noopener">à remplir →</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-k">LinkedIn</span>
+            <a class="link" href="#" target="_blank" rel="noopener">à remplir →</a>
+          </div>
+          <div class="contact-row">
+            <span class="contact-k">Email</span>
+            <a class="link" href="mailto:tony@example.com">tony@example.com</a>
+          </div>
+
+          <div class="divider"></div>
+
+          <p class="muted small">
+            * Ajoute tes liens quand tu veux.  
+            Tu peux aussi mettre des PDF dans <code>assets/files/</code> (CV, reports, etc).
+          </p>
+        </div>
+
+        <footer class="footer">
+          <p class="muted small">© <span id="year"></span> SHIRO — Reverse & Design</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

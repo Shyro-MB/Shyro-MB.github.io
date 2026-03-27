@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHIRO — CV Template Ultimate</title>
+
+  <style>
+    :root{
+      --bg-1:#f7faff;
+      --bg-2:#eef4ff;
+      --bg-3:#e8f0ff;
+
+      --shell-bg:rgba(255,255,255,0.36);
+      --shell-border:rgba(173, 195, 229, 0.34);
+
+      --card-bg:rgba(255,255,255,0.56);
+      --card-bg-2:rgba(248,251,255,0.68);
+      --card-border:rgba(172, 194, 228, 0.42);
+
+      --titlebar-1:rgba(239,245,255,0.95);
+      --titlebar-2:rgba(225,235,248,0.88);
+
+      --text:#60779c;
+      --text-strong:#536b90;
+      --text-soft:#8ba0c0;
+
+      --line:rgba(138,164,206,0.18);
+      --glow:rgba(132,170,255,0.55);
+      --blue-shadow-1:rgba(96,128,184,0.13);
+      --blue-shadow-2:rgba(96,128,184,0.08);
+
+      --mac-red:#e8c7cf;
+      --mac-yellow:#e7dfc5;
+      --mac-green:#d0e3d1;
+
+      --radius-shell:34px;
+      --radius-card:22px;
+      --radius-pill:999px;
+
+      --mono: "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      --ui: Inter, "SF Pro Display", "Segoe UI", Arial, sans-serif;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html, body{
+      margin:0;
+      padding:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(184,210,255,0.42), transparent 28%),
+        radial-gradient(circle at 86% 88%, rgba(186,205,255,0.28), transparent 24%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-2) 52%, var(--bg-3));
+      font-family:var(--ui);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    body{
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:48px 24px;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    /* GRID GLOBAL */
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(128,160,214,0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(128,160,214,0.055) 1px, transparent 1px);
+      background-size:42px 42px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.15));
+    }
+
+    /* LIGNES TECHNIQUES DE FOND */
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.22;
+      background:
+        linear-gradient(90deg, transparent 7%, rgba(140,168,208,.12) 7.15%, transparent 7.3%),
+        linear-gradient(90deg, transparent 84%, rgba(140,168,208,.12) 84.15%, transparent 84.3%),
+        linear-gradient(180deg, transparent 8%, rgba(140,168,208,.09) 8.1%, transparent 8.2%),
+        linear-gradient(180deg, transparent 90%, rgba(140,168,208,.09) 90.1%, transparent 90.2%);
+    }
+
+    .page{
+      width:210mm;
+      min-height:297mm;
+      position:relative;
+      padding:22mm 16mm;
+    }
+
+    .page::before{
+      content:"";
+      position:absolute;
+      left:6mm;
+      right:6mm;
+      top:8mm;
+      bottom:8mm;
+      border-radius:42px;
+      border:1px solid rgba(178,198,233,0.26);
+      pointer-events:none;
+      opacity:.7;
+    }
+
+    .main-shell{
+      position:relative;
+      min-height:253mm;
+      border-radius:var(--radius-shell);
+      background:var(--shell-bg);
+      border:1px solid var(--shell-border);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:
+        0 35px 90px rgba(111,140,188,0.13),
+        0 12px 32px rgba(111,140,188,0.07),
+        inset 0 1px 0 rgba(255,255,255,0.82),
+        inset 0 -1px 0 rgba(201,215,241,0.18);
+      padding:26px 26px 28px;
+      overflow:hidden;
+      isolation:isolate;
+    }
+
+    /* HALOS */
+    .main-shell::before{
+      content:"";
+      position:absolute;
+      width:320px;
+      height:320px;
+      top:-90px;
+      left:-70px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(165,196,255,0.34), transparent 68%);
+      filter:blur(22px);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .main-shell::after{
+      content:"";
+      position:absolute;
+      width:280px;
+      height:280px;
+      right:-70px;
+      bottom:-70px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(196,221,255,0.30), transparent 68%);
+      filter:blur(22px);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* TOP GLOW */
+    .top-glow{
+      position:absolute;
+      left:30px;
+      right:30px;
+      top:17px;
+      height:2px;
+      background:linear-gradient(90deg, transparent, var(--glow), transparent);
+      opacity:.9;
+      filter:blur(.2px);
+      z-index:2;
+    }
+
+    /* HEADER */
+    .hero{
+      position:relative;
+      z-index:2;
+      display:flex;
+      justify-content:flex-start;
+      align-items:center;
+      margin-bottom:18px;
+      padding:6px 2px 10px;
+    }
+
+    .hero-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:12px;
+      padding:13px 20px;
+      border-radius:var(--radius-pill);
+      background:rgba(221,233,250,0.70);
+      border:1px solid rgba(177,198,231,0.30);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.76),
+        0 8px 18px rgba(126,154,204,0.08);
+      color:#6f86a8;
+      font-family:var(--mono);
+      font-size:14px;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+
+    .hero-pill::before{
+      content:"";
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:linear-gradient(180deg, #dbe8ff, #aec7f0);
+      box-shadow:0 0 0 4px rgba(185,208,245,.18);
+      flex:0 0 auto;
+    }
+
+    .hero-separator{
+      opacity:.55;
+    }
+
+    /* CONTENT LAYOUT */
+    .layout{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .row-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    /* CARD */
+    .terminal{
+      position:relative;
+      background:linear-gradient(180deg, var(--card-bg), var(--card-bg-2));
+      border:1px solid var(--card-border);
+      border-radius:var(--radius-card);
+      overflow:hidden;
+      backdrop-filter:blur(7px);
+      -webkit-backdrop-filter:blur(7px);
+      box-shadow:
+        0 16px 36px var(--blue-shadow-1),
+        0 6px 14px var(--blue-shadow-2),
+        inset 0 1px 0 rgba(255,255,255,0.75),
+        inset 0 -1px 0 rgba(176,197,232,0.12);
+    }
+
+    .terminal::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.18), transparent 28%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .terminal::after{
+      content:"";
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:-1px;
+      height:18px;
+      border-radius:0 0 18px 18px;
+      background:linear-gradient(180deg, rgba(130,170,235,0.03), rgba(130,170,235,0.10));
+      filter:blur(6px);
+      opacity:.55;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    /* TITLEBAR */
+    .titlebar{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-height:46px;
+      padding:0 18px;
+      background:linear-gradient(180deg, var(--titlebar-1), var(--titlebar-2));
+      border-bottom:1px solid rgba(160,185,225,0.22);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,0.56);
+    }
+
+    .traffic{
+      display:flex;
+      gap:7px;
+      align-items:center;
+      flex:0 0 auto;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.52);
+      opacity:.95;
+    }
+
+    .dot.red{ background:var(--mac-red); }
+    .dot.yellow{ background:var(--mac-yellow); }
+    .dot.green{ background:var(--mac-green); }
+
+    .terminal-title{
+      font-family:var(--mono);
+      color:var(--text-strong);
+      font-size:15px;
+      letter-spacing:.01em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* BODY */
+    .terminal-body{
+      position:relative;
+      z-index:1;
+      padding:18px 22px 20px;
+      min-height:120px;
+    }
+
+    .about .terminal-body{ min-height:154px; }
+    .skills .terminal-body,
+    .languages .terminal-body,
+    .education .terminal-body,
+    .interests .terminal-body{ min-height:116px; }
+    .experience .terminal-body{ min-height:218px; }
+
+    /* LINES */
+    .line{
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(164,188,225,0.26), rgba(164,188,225,0.12));
+      margin:0 0 18px 0;
+    }
+
+    .line.short{ width:42%; }
+    .line.mid{ width:62%; }
+    .line.long{ width:82%; }
+    .line.full{ width:96%; }
+    .line.right{
+      margin-left:auto;
+      background:linear-gradient(90deg, rgba(164,188,225,0.12), rgba(164,188,225,0.24));
+    }
+
+    .line-group{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:6px;
+    }
+
+    .bullet-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .bullet{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:rgba(154,183,224,0.72);
+      box-shadow:0 0 0 4px rgba(175,200,236,.12);
+      flex:0 0 auto;
+    }
+
+    .bullet-line{
+      flex:1;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(164,188,225,0.24), rgba(164,188,225,0.08));
+    }
+
+    .section-fade{
+      position:absolute;
+      inset:auto 22px 16px auto;
+      width:74px;
+      height:2px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(164,188,225,0.10), rgba(164,188,225,0.34));
+      opacity:.8;
+    }
+
+    /* DECORATIONS */
+    .binary-left,
+    .binary-right{
+      position:absolute;
+      font-family:var(--mono);
+      font-size:12px;
+      line-height:1.55;
+      color:rgba(134,162,205,0.22);
+      pointer-events:none;
+      user-select:none;
+      z-index:1;
+      white-space:pre;
+    }
+
+    .binary-left{
+      left:-8px;
+      top:112px;
+    }
+
+    .binary-right{
+      right:-8px;
+      top:206px;
+      text-align:right;
+    }
+
+    .micro-terminal{
+      position:absolute;
+      right:42px;
+      bottom:38px;
+      font-family:var(--mono);
+      font-size:11px;
+      line-height:1.55;
+      color:rgba(111,139,182,0.22);
+      opacity:.28;
+      pointer-events:none;
+      z-index:1;
+      text-align:left;
+    }
+
+    .micro-terminal .soft{
+      opacity:.72;
+    }
+
+    .micro-grid{
+      position:absolute;
+      left:34px;
+      bottom:56px;
+      display:grid;
+      grid-template-columns:repeat(6, 5px);
+      gap:7px;
+      opacity:.45;
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .micro-grid span{
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:rgba(159,186,226,0.36);
+      box-shadow:0 0 8px rgba(159,186,226,0.10);
+    }
+
+    .hex-ui{
+      position:absolute;
+      right:108px;
+      bottom:56px;
+      width:118px;
+      height:36px;
+      opacity:.42;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .hex-ui svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .circuit-top{
+      position:absolute;
+      right:34px;
+      top:74px;
+      width:164px;
+      height:98px;
+      opacity:.16;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .circuit-top svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .wave-top{
+      position:absolute;
+      left:56px;
+      top:124px;
+      width:238px;
+      height:30px;
+      opacity:.22;
+      pointer-events:none;
+      z-index:1;
+    }
+
+    .wave-top svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .ghost-code-top{
+      position:absolute;
+      left:48px;
+      top:44px;
+      font-family:var(--mono);
+      font-size:10px;
+      line-height:1.5;
+      color:rgba(123,150,192,0.12);
+      pointer-events:none;
+      z-index:1;
+      white-space:pre;
+    }
+
+    .ghost-code-bottom{
+      position:absolute;
+      left:34px;
+      right:34px;
+      bottom:12px;
+      height:120px;
+      overflow:hidden;
+      font-family:var(--mono);
+      font-size:10px;
+      line-height:1.45;
+      color:rgba(123,150,192,0.10);
+      pointer-events:none;
+      z-index:1;
+      white-space:pre-wrap;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.22), rgba(0,0,0,.02));
+    }
+
+    /* WHOAMI PILL IN ABOUT */
+    .about-meta{
+      display:flex;
+      gap:12px;
+      margin-bottom:14px;
+      flex-wrap:wrap;
+    }
+
+    .meta-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(236,243,252,0.82);
+      border:1px solid rgba(177,198,231,0.24);
+      color:var(--text-soft);
+      font-family:var(--mono);
+      font-size:12px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.68);
+    }
+
+    .meta-chip::before{
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:rgba(150,183,230,.82);
+      flex:0 0 auto;
+    }
+
+    /* PRINT */
+    @page{
+      size:A4;
+      margin:0;
+    }
+
+    @media print{
+      html, body{
+        background:white !important;
+      }
+      body{
+        padding:0;
+      }
+      .page{
+        width:210mm;
+        min-height:297mm;
+        padding:14mm 10mm;
+      }
+    }
+
+    /* RESPONSIVE PREVIEW */
+    @media (max-width: 1100px){
+      body{
+        padding:16px;
+      }
+      .page{
+        width:100%;
+        min-height:auto;
+        padding:0;
+      }
+      .main-shell{
+        min-height:auto;
+      }
+    }
+
+    @media (max-width: 780px){
+      .row-2{
+        grid-template-columns:1fr;
+      }
+      .hero-pill{
+        font-size:12px;
+      }
+      .terminal-title{
+        font-size:13px;
+      }
+      .binary-left,
+      .binary-right,
+      .circuit-top,
+      .wave-top,
+      .ghost-code-top,
+      .ghost-code-bottom{
+        display:none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="main-shell">
+      <div class="top-glow"></div>
+
+      <div class="ghost-code-top">build clean && deploy --preview
+iptables -L | grep ACCEPT
+route add default gw 10.0.0.1
+network: up / service: active</div>
+
+      <div class="binary-left">1
+0
+1
+0
+0
+1
+1
+0
+1
+0
+0
+1
+1
+0
+1
+0
+0
+1
+1
+0
+1
+0
+0
+1</div>
+
+      <div class="binary-right">1
+0
+0
+1
+0
+1
+0
+0
+1
+0
+1
+1
+0
+1
+0
+0
+1
+1
+0
+0
+1
+0
+1</div>
+
+      <div class="wave-top">
+        <svg viewBox="0 0 240 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 16C16 16 16 8 28 8C40 8 39 22 52 22C65 22 67 10 79 10C91 10 93 18 105 18C117 18 119 6 131 6C143 6 145 21 156 21C168 21 169 13 180 13C191 13 197 16 205 16C214 16 219 12 239 12" stroke="rgba(128,160,214,0.9)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="circuit-top">
+        <svg viewBox="0 0 164 98" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <rect x="58" y="22" width="44" height="44" rx="6" stroke="rgba(136,165,210,.95)" stroke-width="1.2"/>
+          <path d="M58 29H39V14" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M102 29H128V12" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M58 59H34V76" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M102 59H132V80" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M80 22V6" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M80 66V90" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M102 44H154" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <path d="M58 44H10" stroke="rgba(136,165,210,.8)" stroke-width="1.2"/>
+          <circle cx="39" cy="14" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="128" cy="12" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="34" cy="76" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="132" cy="80" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="10" cy="44" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="154" cy="44" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="80" cy="6" r="2" fill="rgba(160,188,228,.8)"/>
+          <circle cx="80" cy="90" r="2" fill="rgba(160,188,228,.8)"/>
+        </svg>
+      </div>
+
+      <div class="hero">
+        <div class="hero-pill">
+          <span>SHIRO</span>
+          <span class="hero-separator">—</span>
+          <span>cv.template</span>
+          <span class="hero-separator">•</span>
+          <span>premium</span>
+          <span class="hero-separator">•</span>
+          <span>minimal</span>
+        </div>
+      </div>
+
+      <div class="layout">
+        <section class="terminal about">
+          <div class="titlebar">
+            <div class="traffic">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">shiro@linux:~$ cat about_me</div>
+          </div>
+
+          <div class="terminal-body">
+            <div class="about-meta">
+              <span class="meta-chip">shiro@linux:~$ whoami</span>
+              <span class="meta-chip">Mohamed Bouayad</span>
+              <span class="meta-chip">Available for new opportunities</span>
+            </div>
+
+            <div class="line-group">
+              <div class="line full"></div>
+              <div class="line long"></div>
+              <div class="line full"></div>
+              <div class="line long"></div>
+              <div class="line mid"></div>
+            </div>
+
+            <div class="bullet-row">
+              <span class="bullet"></span>
+              <span class="bullet-line"></span>
+            </div>
+
+            <div class="section-fade"></div>
+          </div>
+        </section>
+
+        <div class="row-2">
+          <section class="terminal skills">
+            <div class="titlebar">
+              <div class="traffic">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">shiro@linux:~$ ./skills.sh</div>
+            </div>
+
+            <div class="terminal-body">
+              <div class="line-group">
+                <div class="line full"></div>
+                <div class="line long"></div>
+                <div class="line mid"></div>
+                <div class="line short"></div>
+              </div>
+
+              <div class="bullet-row">
+                <span class="bullet"></span>
+                <span class="bullet-line"></span>
+              </div>
+
+              <div class="section-fade"></div>
+            </div>
+          </section>
+
+          <section class="terminal languages">
+            <div class="titlebar">
+              <div class="traffic">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">shiro@linux:~$ ./languages</div>
+            </div>
+
+            <div class="terminal-body">
+              <div class="line-group">
+                <div class="line full"></div>
+                <div class="line long"></div>
+                <div class="line mid"></div>
+                <div class="line short right"></div>
+              </div>
+
+              <div class="bullet-row">
+                <span class="bullet"></span>
+                <span class="bullet-line"></span>
+              </div>
+
+              <div class="section-fade"></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="terminal experience">
+          <div class="titlebar">
+            <div class="traffic">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">shiro@linux:~$ history --experience</div>
+          </div>
+
+          <div class="terminal-body">
+            <div class="line-group">
+              <div class="line full"></div>
+              <div class="line long"></div>
+              <div class="line full"></div>
+              <div class="line long"></div>
+              <div class="line full"></div>
+              <div class="line long"></div>
+              <div class="line mid"></div>
+            </div>
+
+            <div class="bullet-row">
+              <span class="bullet"></span>
+              <span class="bullet-line"></span>
+            </div>
+
+            <div class="section-fade"></div>
+          </div>
+        </section>
+
+        <div class="row-2">
+          <section class="terminal education">
+            <div class="titlebar">
+              <div class="traffic">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">shiro@linux:~$ cat education.log</div>
+            </div>
+
+            <div class="terminal-body">
+              <div class="line-group">
+                <div class="line full"></div>
+                <div class="line long"></div>
+                <div class="line mid"></div>
+              </div>
+
+              <div class="bullet-row">
+                <span class="bullet"></span>
+                <span class="bullet-line"></span>
+              </div>
+
+              <div class="section-fade"></div>
+            </div>
+          </section>
+
+          <section class="terminal interests">
+            <div class="titlebar">
+              <div class="traffic">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">shiro@linux:~$ ls interests/</div>
+            </div>
+
+            <div class="terminal-body">
+              <div class="line-group">
+                <div class="line full"></div>
+                <div class="line long"></div>
+                <div class="line mid"></div>
+              </div>
+
+              <div class="bullet-row">
+                <span class="bullet"></span>
+                <span class="bullet-line"></span>
+              </div>
+
+              <div class="section-fade"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="micro-grid" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="hex-ui" aria-hidden="true">
+        <svg viewBox="0 0 118 36" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <path d="M22 5L31 10.5V21.5L22 27L13 21.5V10.5L22 5Z" stroke="rgba(133,164,209,.9)" stroke-width="1.1"/>
+          <circle cx="58" cy="18" r="8.4" stroke="rgba(133,164,209,.9)" stroke-width="1.1"/>
+          <path d="M82 12L91 17.5V28.5L82 34L73 28.5V17.5L82 12Z" stroke="rgba(133,164,209,.9)" stroke-width="1.1"/>
+          <path d="M31 18H49" stroke="rgba(133,164,209,.9)" stroke-width="1.1"/>
+          <path d="M66.5 18H73" stroke="rgba(133,164,209,.9)" stroke-width="1.1"/>
+          <path d="M91 18H116" stroke="rgba(133,164,209,.9)" stroke-width="1.1"/>
+        </svg>
+      </div>
+
+      <div class="micro-terminal">
+        <div>shiro@linux:~$ uname -a</div>
+        <div class="soft">Linux x86_64</div>
+        <br>
+        <div>0x01FFEDDE: 50 LD 04 06 10 82.21</div>
+        <div>0x00E7ED5E: 09 81 00 00 10 2E.2.</div>
+        <div>0x00F2EDA6: 06 27 04 06 10 06...</div>
+        <div>0x06EFD052: ........ ........</div>
+      </div>
+
+      <div class="ghost-code-bottom">build clean && deploy --preview
+iptables -L | grep ACCEPT
+route add default gw 10.0.0.1
+network: up / service: active
+int: system.ready / ui: premium.shell / status: ok
+memory offsets / linux / tcp/ip / vlan / vpn / tooling / scripts / reverse / documentation / systems</div>
+    </div>
+  </div>
+</body>
+</html>
