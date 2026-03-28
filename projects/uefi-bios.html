@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UEFI / BIOS Internals · SHIRO</title>
+  <meta name="description" content="Analyse d’un firmware UEFI réel : acquisition, parsing, PEI/DXE/SMM, NVRAM, Secure Boot, drivers EFI et surfaces d’attaque." />
+
+  <!-- Style SHIRO -->
+  <link rel="stylesheet" href="../css/style.css" />
+
+  <!-- Prism.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    .project-page {
+      padding-top: 20px;
+    }
+
+    .shiro-mini-brand {
+      margin-bottom: 30px;
+      padding-left: 10px;
+    }
+
+    .shiro-mini-brand .brand-mark {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+
+    .shiro-mini-brand .brand-sub {
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: .85rem;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--muted);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: .9rem;
+      padding: 8px 0;
+    }
+
+    .back-link:hover {
+      color: var(--text);
+    }
+
+    .back-link::before {
+      content: "← ";
+      opacity: 0.7;
+    }
+
+    .project-layout {
+      margin-top: 0;
+    }
+
+    .shot {
+      margin: 22px 0;
+    }
+
+    .shot img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line2);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 20px 50px rgba(0,0,0,.6);
+      transition: transform .4s ease, box-shadow .4s ease;
+    }
+
+    .shot img:hover {
+      transform: scale(1.015);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 30px 80px rgba(0,0,0,.9);
+    }
+
+    .shot figcaption {
+      margin-top: 10px;
+      font-size: .9rem;
+      color: var(--muted);
+      text-align: center;
+      font-family: var(--mono);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: .95rem;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      border: 1px solid var(--line2);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .compare-table th {
+      color: var(--text);
+      background: rgba(255,255,255,.02);
+      font-weight: 600;
+    }
+
+    .project-hero .project-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Aller au contenu</a>
+
+  <main id="main" class="section project-page">
+    <div class="container">
+
+      <!-- Mini branding -->
+      <div class="shiro-mini-brand">
+        <div class="brand-mark">SHIRO</div>
+        <div class="brand-sub">reverse · design · systems</div>
+      </div>
+
+      <!-- Retour -->
+      <a class="back-link" href="../index.html">Retour aux projets</a>
+
+      <!-- HERO -->
+      <header class="project-hero card pad reveal" style="margin-bottom:20px;">
+        <div class="project-hero-top">
+          <h1 class="h2" style="margin:0;">UEFI / BIOS Internals</h1>
+          <div class="project-badges">
+            <span class="badge">2026</span>
+            <span class="badge badge-outline">Firmware Reverse Engineering</span>
+          </div>
+        </div>
+
+        <p class="sub" style="margin-top:10px;">
+          Analyse d’un firmware UEFI réel : acquisition, parsing, structure PEI / DXE / SMM,
+          variables NVRAM, Secure Boot, extraction de drivers <code>.efi</code> et étude
+          des surfaces d’attaque pré-OS.
+        </p>
+
+        <div class="project-meta-row">
+          <span class="chip">UEFITool</span>
+          <span class="chip">Ghidra</span>
+          <span class="chip">IDA</span>
+          <span class="chip">Chipsec</span>
+          <span class="chip">flashrom</span>
+          <span class="chip">bcdedit</span>
+          <span class="chip">Secure Boot</span>
+          <span class="chip">NVRAM</span>
+        </div>
+
+        <div class="note" style="margin-top:14px;">
+          <p class="muted small" style="margin:0;">
+            <span class="k">Positionnement</span> : ce projet s’inscrit dans une analyse progressive du système,
+            de l’environnement applicatif vers les couches les plus basses. Ici, l’objectif est de comprendre
+            le firmware comme première surface d’exécution, avant même le chargement de l’OS.
+          </p>
+        </div>
+      </header>
+
+      <div class="project-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="project-sidebar card pad">
+          <h2 class="h3" style="margin-top:0;">📋 Sommaire</h2>
+          <ul class="toc">
+            <li><a href="#workflow">Workflow UEFI</a></li>
+            <li><a href="#structure">Structure du projet</a></li>
+            <li><a href="#acquisition">1. Firmware Acquisition</a></li>
+            <li><a href="#parsing">2. Firmware Parsing</a></li>
+            <li><a href="#phases">3. PEI / DXE / SMM</a></li>
+            <li><a href="#nvram">4. NVRAM Analysis</a></li>
+            <li><a href="#secureboot">5. Secure Boot</a></li>
+            <li><a href="#ghidra">6. Binary Analysis</a></li>
+            <li><a href="#attack-surface">7. Attack Surface</a></li>
+            <li><a href="#case-study">8. Case Study</a></li>
+            <li><a href="#comparison">Android vs UEFI</a></li>
+            <li><a href="#tools">Outils</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+          </ul>
+
+          <h2 class="h3" style="margin-top:20px;">🛠️ Compétences</h2>
+          <div class="tags">
+            <span class="tag">UEFITool</span>
+            <span class="tag">Firmware parsing</span>
+            <span class="tag">PEI</span>
+            <span class="tag">DXE</span>
+            <span class="tag">SMM</span>
+            <span class="tag">NVRAM</span>
+            <span class="tag">Secure Boot</span>
+            <span class="tag">Ghidra</span>
+            <span class="tag">GUIDs</span>
+            <span class="tag">EFI drivers</span>
+          </div>
+
+          <h2 class="h3" style="margin-top:20px;">📦 Téléchargements</h2>
+          <div class="downloads">
+            <a class="download-link" href="../tools/nvram-dump.py" download>📥 nvram-dump.py</a>
+            <a class="download-link" href="../tools/uefi-protocol-scanner.py" download>📥 uefi-protocol-scanner.py</a>
+            <a class="download-link" href="../resources/uefi-specs.md" download>📥 uefi-specs.md</a>
+            <a class="download-link" href="../writeups/uefi-boot-tampering.md" download>📥 uefi-boot-tampering.md</a>
+          </div>
+        </aside>
+
+        <!-- ARTICLE -->
+        <article class="project-article">
+
+          <!-- WORKFLOW -->
+          <section id="workflow" class="card pad reveal">
+            <h2 class="h3">Workflow UEFI</h2>
+            <div class="mono-box">
+<pre><code class="language-none">┌─────────────────────────────────────────────────────────────┐
+│                    UEFI WORKFLOW                            │
+├─────────────────────────────────────────────────────────────┤
+│  1. Firmware Acquisition   → Dump BIOS / firmware (.bin)   │
+│     (flashrom / vendor tool)                               │
+│                                                             │
+│  2. Firmware Parsing       → Extraction des modules        │
+│     Tool: UEFITool                                          │
+│                                                             │
+│  3. Structure Analysis     → Volumes, PEI, DXE, SMM        │
+│                                                             │
+│  4. NVRAM Analysis         → Variables BootOrder, BootXXXX │
+│     Tool: SetupVar / Chipsec / bcdedit                     │
+│                                                             │
+│  5. Boot Chain Analysis    → Secure Boot chain             │
+│     PK / KEK / DB / DBX                                     │
+│                                                             │
+│  6. Binary Analysis        → Drivers UEFI (.efi)           │
+│     Tool: Ghidra / IDA                                      │
+│                                                             │
+│  7. Attack Surface Mapping → Points critiques              │
+│     (DXE vulnérable, NVRAM tampering, SMM)                 │
+│                                                             │
+│  8. Documentation          → Writeup + scripts             │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+            </div>
+          </section>
+
+          <!-- STRUCTURE -->
+          <section id="structure" class="card pad reveal">
+            <h2 class="h3">Structure du projet</h2>
+            <p class="muted">
+              Organisation identique au projet Android afin de conserver une méthodologie cohérente
+              entre les différentes couches analysées.
+            </p>
+
+<pre><code class="language-none">uefi-bios-internals/
+├── README.md
+├── studies/
+│   ├── 01-firmware-acquisition.md
+│   ├── 02-uefitool-parsing.md
+│   ├── 03-pei-dxe-smm.md
+│   ├── 04-nvram-bootorder.md
+│   ├── 05-secure-boot-chain.md
+│   ├── 06-ghidra-driver-analysis.md
+│   └── 07-attack-surface.md
+├── writeups/
+│   └── uefi-boot-tampering.md
+├── tools/
+│   ├── nvram-dump.py
+│   └── uefi-protocol-scanner.py
+├── images/
+│   ├── uefitool-screenshot.png
+│   ├── ghidra-screenshot.png
+│   ├── bootorder.png
+│   └── secureboot-chain.png
+└── resources/
+    └── uefi-specs.md</code></pre>
+          </section>
+
+          <!-- 1 -->
+          <section id="acquisition" class="card pad reveal">
+            <h2 class="h3">1. Firmware Acquisition</h2>
+            <p class="muted">
+              Première étape : obtenir une image exploitable du firmware, soit par dump local,
+              soit via un firmware public fourni par le constructeur.
+            </p>
+
+            <h3 class="h3">Méthodes</h3>
+            <ul class="list">
+              <li><span class="k">Dump local</span> — acquisition via <code>flashrom</code></li>
+              <li><span class="k">Firmware public</span> — fichier <code>.bin</code> ou <code>.cap</code> récupéré depuis le constructeur</li>
+            </ul>
+
+<pre><code class="language-bash"># Lecture du firmware avec flashrom
+sudo flashrom -p internal -r bios.bin</code></pre>
+
+            <div class="note">
+              <p class="muted small">
+                <span class="k">Approche utilisée</span> : analyse en lecture seule d’un firmware réel,
+                sans modification ni réécriture.
+              </p>
+            </div>
+
+<pre><code class="language-none">firmware.bin
+├── taille : 16 MB
+├── source : dump local ou constructeur
+└── format : .bin / .cap</code></pre>
+          </section>
+
+          <!-- 2 -->
+          <section id="parsing" class="card pad reveal">
+            <h2 class="h3">2. Firmware Parsing — UEFITool</h2>
+            <p class="muted">
+              Une fois l’image du firmware obtenue, l’étape suivante consiste à ouvrir sa structure interne :
+              volumes, modules, drivers et zones NVRAM.
+            </p>
+
+            <h3 class="h3">Ce qu’on analyse</h3>
+            <ul class="list">
+              <li>Firmware Volumes (FV)</li>
+              <li>Modules PEI</li>
+              <li>Modules DXE</li>
+              <li>Drivers SMM</li>
+              <li>Volume NVRAM</li>
+            </ul>
+
+<pre><code class="language-none">Firmware Volume (FV)
+├── PEI volume
+│   ├── PEI Core
+│   └── PEIM modules
+├── DXE volume
+│   ├── DXE Core
+│   ├── DXE drivers
+│   └── SMM drivers
+└── NVRAM volume</code></pre>
+
+            <figure class="shot">
+              <a href="../images/uefitool-screenshot.png" target="_blank">
+                <img src="../images/uefitool-screenshot.png" alt="Capture UEFITool montrant les volumes PEI, DXE et NVRAM" loading="lazy">
+              </a>
+              <figcaption>UEFITool : visualisation réelle de l’arborescence du firmware</figcaption>
+            </figure>
+
+            <div class="note">
+              <p class="muted small">
+                <span class="k">Point clé</span> : cette étape confirme qu’on travaille sur une image réelle,
+                avec des volumes et modules effectivement présents dans le firmware.
+              </p>
+            </div>
+          </section>
+
+          <!-- 3 -->
+          <section id="phases" class="card pad reveal">
+            <h2 class="h3">3. Structure Analysis — PEI / DXE / SMM</h2>
+            <p class="muted">
+              Le firmware suit une logique d’exécution en plusieurs phases. L’objectif ici n’est pas de refaire
+              la spécification UEFI, mais de relier les concepts aux composants observés dans l’image.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Phase</th>
+                  <th>Rôle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PEI</td>
+                  <td>Initialisation précoce du système avant l’environnement principal.</td>
+                </tr>
+                <tr>
+                  <td>DXE</td>
+                  <td>Chargement des drivers et services UEFI principaux.</td>
+                </tr>
+                <tr>
+                  <td>SMM</td>
+                  <td>Contexte très privilégié pour certaines opérations sensibles.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="muted" style="margin-top:14px;">
+              Dans la pratique, l’arborescence UEFITool permet de visualiser ces différentes couches
+              et d’identifier rapidement les modules les plus intéressants à extraire.
+            </p>
+          </section>
+
+          <!-- 4 -->
+          <section id="nvram" class="card pad reveal">
+            <h2 class="h3">4. NVRAM Analysis — BootOrder / BootXXXX</h2>
+            <p class="muted">
+              Les variables NVRAM décrivent l’ordre de démarrage et les différentes entrées de boot.
+              Elles constituent un point d’observation important dans la chaîne pré-OS.
+            </p>
+
+            <h3 class="h3">Sous Windows</h3>
+<pre><code class="language-bash">bcdedit /enum firmware</code></pre>
+
+            <h3 class="h3">Exemple concret</h3>
+<pre><code class="language-none">BootOrder: 0001, 0002
+Boot0001: Windows Boot Manager
+Boot0002: USB Drive</code></pre>
+
+            <figure class="shot">
+              <a href="../images/bootorder.png" target="_blank">
+                <img src="../images/bootorder.png" alt="Capture bcdedit montrant BootOrder et les variables BootXXXX" loading="lazy">
+              </a>
+              <figcaption>Lecture des variables firmware via bcdedit</figcaption>
+            </figure>
+
+            <div class="note">
+              <p class="muted small">
+                <span class="k">Lecture</span> : <code>BootOrder</code> définit la priorité de démarrage,
+                tandis que les variables <code>BootXXXX</code> décrivent chaque entrée disponible.
+              </p>
+            </div>
+          </section>
+
+          <!-- 5 -->
+          <section id="secureboot" class="card pad reveal">
+            <h2 class="h3">5. Secure Boot — Chaîne de confiance</h2>
+            <p class="muted">
+              L’UEFI ne se limite pas à lancer un chargeur. Il applique aussi une logique de validation
+              basée sur une hiérarchie de clés et de bases de signatures.
+            </p>
+
+<pre><code class="language-none">PK (Platform Key) → KEK (Key Exchange Key) → DB (Signature DB) → DBX (Revoked DB)</code></pre>
+
+            <h3 class="h3">Vérification sous Windows</h3>
+<pre><code class="language-powershell">Confirm-SecureBootUEFI
+Get-SecureBootUEFI</code></pre>
+
+            <ul class="list">
+              <li><span class="k">PK</span> — racine de confiance plateforme</li>
+              <li><span class="k">KEK</span> — clés pouvant mettre à jour les bases</li>
+              <li><span class="k">DB</span> — signatures autorisées</li>
+              <li><span class="k">DBX</span> — signatures révoquées</li>
+            </ul>
+
+            <figure class="shot">
+              <a href="../images/secureboot-chain.png" target="_blank">
+                <img src="../images/secureboot-chain.png" alt="Capture PowerShell liée à Secure Boot et schéma de chaîne de confiance" loading="lazy">
+              </a>
+              <figcaption>Secure Boot : état de la plateforme et hiérarchie de confiance</figcaption>
+            </figure>
+
+            <div class="note">
+              <p class="muted small">
+                <span class="k">Point d’analyse</span> : la sécurité ne dépend pas seulement d’un état
+                activé ou désactivé, mais de la qualité des clés et de la politique de validation en place.
+              </p>
+            </div>
+          </section>
+
+          <!-- 6 -->
+          <section id="ghidra" class="card pad reveal">
+            <h2 class="h3">6. Binary Analysis — Driver UEFI dans Ghidra</h2>
+            <p class="muted">
+              Après parsing du firmware, certains drivers DXE peuvent être extraits puis chargés
+              dans un analyseur binaire afin d’observer leur logique d’initialisation et les protocoles utilisés.
+            </p>
+
+            <h3 class="h3">Extraction du driver</h3>
+            <ul class="list">
+              <li>Clic droit sur un module dans UEFITool</li>
+              <li><span class="k">Extract body</span></li>
+              <li>Sortie : fichier <code>.efi</code></li>
+            </ul>
+
+            <h3 class="h3">Ouverture dans Ghidra</h3>
+            <ul class="list">
+              <li>Loader adapté au binaire EFI</li>
+              <li>Architecture 32 ou 64 bits selon le module</li>
+              <li>Recherche de fonctions, GUIDs et protocoles EFI</li>
+            </ul>
+
+<pre><code class="language-c">EFI_STATUS EFIAPI GraphicsOutputDriver(
+    EFI_HANDLE ImageHandle,
+    EFI_SYSTEM_TABLE *SystemTable)
+{
+    EFI_STATUS Status;
+    Status = gBS->InstallMultipleProtocolInterfaces(
+        &ImageHandle,
+        &gEfiGraphicsOutputProtocolGuid,
+        &mGraphicsOutput,
+        NULL);
+    return Status;
+}</code></pre>
+
+            <figure class="shot">
+              <a href="../images/ghidra-screenshot.png" target="_blank">
+                <img src="../images/ghidra-screenshot.png" alt="Capture Ghidra montrant assembly, pseudocode et identifiants de protocoles EFI" loading="lazy">
+              </a>
+              <figcaption>Analyse d’un driver UEFI extrait du firmware</figcaption>
+            </figure>
+          </section>
+
+          <!-- 7 -->
+          <section id="attack-surface" class="card pad reveal">
+            <h2 class="h3">7. Attack Surface Mapping</h2>
+            <p class="muted">
+              Le firmware représente une surface d’exécution persistante, indépendante du système d’exploitation.
+              Cette couche mérite donc une lecture sécurité à part entière.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Composant</th>
+                  <th>Risque principal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>DXE Drivers</td>
+                  <td>Bugs logiques, parsing vulnérable, erreurs de gestion mémoire.</td>
+                </tr>
+                <tr>
+                  <td>NVRAM</td>
+                  <td>Modification de BootOrder ou de variables sensibles.</td>
+                </tr>
+                <tr>
+                  <td>SMM</td>
+                  <td>Surface hautement privilégiée, critique en cas d’erreur.</td>
+                </tr>
+                <tr>
+                  <td>Secure Boot</td>
+                  <td>Configuration faible, clés mal gérées ou politique de validation insuffisante.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="note" style="margin-top:14px;">
+              <p class="muted small">
+                <span class="k">Cas concret</span> : si l’ordre de boot peut être modifié depuis un environnement
+                insuffisamment protégé, il devient possible de rediriger le démarrage vers un autre chargeur.
+              </p>
+            </div>
+          </section>
+
+          <!-- 8 -->
+          <section id="case-study" class="card pad reveal">
+            <h2 class="h3">8. Case Study — Firmware MSI réel</h2>
+            <p class="muted">
+              Cette analyse a été réalisée à partir d’un firmware MSI réel, afin de confronter les concepts UEFI
+              à une implémentation concrète.
+            </p>
+
+<pre><code class="language-none">Firmware analysé : MSI (BIOS officiel)
+
+Observations :
+- Présence de plusieurs DXE drivers identifiables
+- Modules SMM visibles dans l’arborescence
+- Variables NVRAM observables depuis Windows
+- Secure Boot présent selon la configuration système
+
+Conclusion :
+Le firmware suit une architecture UEFI classique avec séparation nette
+des composants d’initialisation, des drivers principaux et de la logique
+de confiance appliquée au démarrage.</code></pre>
+          </section>
+
+          <!-- COMPARISON -->
+          <section id="comparison" class="card pad reveal">
+            <h2 class="h3">Android Reverse vs UEFI / Boot Chain</h2>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Android Reverse</th>
+                  <th>UEFI / Boot Chain</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Application level</td>
+                  <td>Firmware / pré-OS</td>
+                </tr>
+                <tr>
+                  <td>DEX / smali</td>
+                  <td>PEI / DXE / SMM</td>
+                </tr>
+                <tr>
+                  <td>Protections applicatives</td>
+                  <td>Chaîne de confiance firmware</td>
+                </tr>
+                <tr>
+                  <td>Instrumentation type Frida</td>
+                  <td>Inspection via Chipsec / SetupVar / Ghidra</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <!-- TOOLS -->
+          <section id="tools" class="card pad reveal">
+            <h2 class="h3">Outils utilisés</h2>
+            <div class="tools-grid">
+              <div class="tool-card">
+                <h4>UEFITool</h4>
+                <p class="muted">Parsing du firmware, extraction de modules et lecture de l’arborescence UEFI.</p>
+              </div>
+
+              <div class="tool-card">
+                <h4>Ghidra / IDA</h4>
+                <p class="muted">Analyse des drivers UEFI extraits, fonctions, GUIDs et protocoles.</p>
+              </div>
+
+              <div class="tool-card">
+                <h4>Chipsec</h4>
+                <p class="muted">Inspection de certains aspects sécurité du firmware et de l’environnement UEFI.</p>
+              </div>
+
+              <div class="tool-card">
+                <h4>flashrom</h4>
+                <p class="muted">Acquisition du firmware en lecture seule lorsqu’un dump local est possible.</p>
+              </div>
+
+              <div class="tool-card">
+                <h4>bcdedit</h4>
+                <p class="muted">Lecture des variables firmware côté Windows, notamment BootOrder et BootXXXX.</p>
+              </div>
+
+              <div class="tool-card">
+                <h4>SetupVar</h4>
+                <p class="muted">Observation et interaction avec certaines variables UEFI selon le contexte.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- CONCLUSION -->
+          <section id="conclusion" class="card pad reveal">
+            <h2 class="h3">Conclusion</h2>
+            <p class="muted">
+              Le firmware n’est pas simplement une étape de démarrage. Il constitue la première surface
+              d’exécution du système, initialise des composants critiques, applique une logique de confiance
+              et prépare la transition vers l’OS.
+            </p>
+            <p class="muted">
+              Cette analyse met en évidence une couche rarement étudiée dans les projets classiques,
+              mais essentielle pour comprendre la sécurité globale d’une machine.
+            </p>
+          </section>
+
+        </article>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer" style="margin-top:40px;">
+        <p>© <span id="year">2026</span> SHIRO — reverse engineering portfolio</p>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-powershell.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+</body>
+</html>

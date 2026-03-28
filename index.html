@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHIRO / Reverse Engineering</title>
-  <meta name="description" content="Portfolio minimaliste (SHIRO) : reverse engineering Android, firmware/UEFI, tooling, writeups. Design propre, approche méthodique." />
+  <title>SHYRO / Reverse Engineering</title>
+  <meta name="description" content="reverse engineering Android, firmware/UEFI, tooling, writeups. Design propre, approche méthodique." />
 
-  <meta property="og:title" content="SHIRO / Reverse Engineering" />
+  <meta property="og:title" content="SHYRO / BOUAYAD Mohammed" />
   <meta property="og:description" content="Android RE • Firmware/UEFI • Tooling • Writeups — Portfolio minimaliste." />
   <meta property="og:type" content="website" />
 
@@ -22,8 +22,8 @@
   <header class="header" id="top">
     <nav class="nav" aria-label="Navigation principale">
       <a class="brand" href="#top" aria-label="Retour en haut">
-        <span class="brand-mark">SHIRO</span>
-        <span class="brand-sub">reverse • design • systems</span>
+		<span class="brand-mark">SHYRO</span>
+		<span class="brand-sub">reverse • low-level • systems</span>
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu">
@@ -53,17 +53,19 @@
         <div class="hero-left">
           <div class="pill">
             <span class="dot"></span>
-            <span>SHIRO — minimal • precise • documented</span>
+            <span>SHYRO — reverse • memory • systems</span>
           </div>
 
           <h1 class="title">
-            Reverse Engineering
-            <span class="title-accent">+ Design Mindset</span>
+            BOUAYAD Mohammed
+            <span class="title-accent">+ Reverse & low-level</span>
           </h1>
 
           <p class="lead">
-            J’analyse et je documente : APK protégées (Android), instrumentation (Frida), et surfaces firmware/UEFI.
-            Le style est minimal. Le contenu est solide.
+            J’analyse et je documente des environnements Android, Windows et firmware :
+            APK protégées, instrumentation dynamique, mémoire, UEFI et workflows d’analyse.
+
+			Silence. Memory. Control.
           </p>
 
           <div class="hero-cta">
@@ -90,10 +92,10 @@
 
             <div class="metric">
               <div class="metric-top">
-                <span class="metric-num">SHIRO</span>
+                <span class="metric-num">SHYRO</span>
                 <span class="metric-tag">style</span>
               </div>
-              <p class="metric-label">Minimal & propre</p>
+              <p class="metric-label">Simple & propre</p>
             </div>
           </div>
         </div>
@@ -106,16 +108,16 @@
             </div>
             <pre class="terminal-body"><code>
 $ whoami
-shiro
+shyro
 
 $ scope
-android_re, firmware, tooling, documentation
+reverse, firmware, tooling, documentation
 
 $ principles
 observe -> extract -> understand -> report
 
 $ now
-build portfolio + publish writeups
+build portfolio & publish writeups
             </code></pre>
           </div>
 
@@ -126,7 +128,7 @@ build portfolio + publish writeups
             </div>
             <div class="mini card reveal">
               <p class="mini-k">RE</p>
-              <p class="mini-v">smali, native, packers</p>
+              <p class="mini-v">memory, native, packers</p>
             </div>
             <div class="mini card reveal">
               <p class="mini-k">Design</p>
@@ -151,20 +153,20 @@ build portfolio + publish writeups
       <div class="container">
         <div class="section-head">
           <h2 class="h2">Projets</h2>
-          <p class="sub">3 piliers. Tu peux en ajouter 20 derrière sans casser le style.</p>
+          <p class="sub">Ce n'est que le début...</p>
         </div>
 
         <div class="grid projects">
           <article class="project card reveal">
             <div class="project-top">
               <span class="badge">Android</span>
+              <span class="badge badge-outline">IDA Pro</span>
               <span class="badge badge-outline">Frida</span>
-              <span class="badge badge-outline">Smali</span>
             </div>
             <h3 class="h3">Android Reverse Engineering</h3>
             <p class="muted">
-              Analyse d’APK, protections (packers), instrumentation dynamique, extraction & validation de signaux.
-              Tooling pour automatiser l’observation.
+				Analyse d’APK, protections (packers), instrumentation dynamique et extraction de logique.
+				Mise en place de workflows reproductibles et automatisation de l’analyse.
             </p>
             <div class="project-meta">
               <span class="chip">workflow</span>
@@ -178,12 +180,12 @@ build portfolio + publish writeups
             <div class="project-top">
               <span class="badge">Firmware</span>
               <span class="badge badge-outline">UEFI</span>
-              <span class="badge badge-outline">Ghidra</span>
+              <span class="badge badge-outline">memory</span>
             </div>
             <h3 class="h3">UEFI / BIOS Internals</h3>
             <p class="muted">
-              Compréhension des firmwares UEFI, variables NVRAM, chaîne de boot, surfaces de confiance,
-              et méthodes d’audit.
+              Compréhension des firmwares UEFI, variables NVRAM, chaîne de boot et surfaces de confiance.
+              Analyse des mécanismes internes et des points critiques.
             </p>
             <div class="project-meta">
               <span class="chip">threat model</span>
@@ -196,13 +198,13 @@ build portfolio + publish writeups
           <article class="project card reveal">
             <div class="project-top">
               <span class="badge">Pre-boot</span>
-              <span class="badge badge-outline">Defense</span>
-              <span class="badge badge-outline">Chain-of-trust</span>
+              <span class="badge badge-outline">security</span>
+              <span class="badge badge-outline">bootkit</span>
             </div>
             <h3 class="h3">Pre-Boot Spoofer Analysis</h3>
             <p class="muted">
-              Étude défensive : surfaces d’attaque pre-boot, persistance firmware, signaux de détection,
-              et mitigations.
+				Analyse des surfaces d’attaque pre-boot, persistance firmware et stratégies de détection.
+				Étude orientée compréhension et mitigation.
             </p>
             <div class="project-meta">
               <span class="chip">mitigations</span>
@@ -227,7 +229,7 @@ build portfolio + publish writeups
           <div class="card reveal pad">
             <h3 class="h3">Approche</h3>
             <p class="muted">
-              J’avance comme une enquête : je capture le comportement, je réduis le bruit,
+              Je capture le comportement, je réduis le bruit,
               j’isole les points clés, puis je documente clairement.
             </p>
             <ul class="list">
@@ -241,21 +243,21 @@ build portfolio + publish writeups
           <div class="card reveal pad">
             <h3 class="h3">Compétences</h3>
             <div class="tags">
-              <span class="tag">Android RE</span>
-              <span class="tag">Smali</span>
-              <span class="tag">Frida</span>
-              <span class="tag">LSPatch</span>
-              <span class="tag">Ghidra</span>
-              <span class="tag">UEFI</span>
-              <span class="tag">Python tooling</span>
-              <span class="tag">Documentation</span>
-              <span class="tag">UI / Branding</span>
-              <span class="tag">Motion design</span>
+                <span class="tag">Android RE</span>
+			    <span class="tag">Windows RE</span>
+				<span class="tag">IDA Pro</span>
+				<span class="tag">Ghidra</span>
+				<span class="tag">x64dbg</span>
+				<span class="tag">UEFI</span>
+				<span class="tag">Hooking</span>
+				<span class="tag">Python Tooling</span>
+				<span class="tag">UI / Branding</span>
+				<span class="tag">Motion Design</span>
             </div>
 
             <div class="note">
               <p class="muted">
-                Le design ici n’est pas “gimmick” : c’est juste une façon de livrer des infos proprement.
+                Le design ici n’est pas “gimmick” : c’est juste ma façon de livrer des infos proprement.
               </p>
             </div>
           </div>
@@ -267,14 +269,14 @@ build portfolio + publish writeups
     <section id="work" class="section">
       <div class="container">
         <div class="section-head">
-          <h2 class="h2">Design (à venir)</h2>
-          <p class="sub">Tu pourras drop tes projets graphisme/motion ici sans casser le thème.</p>
+          <h2 class="h2">Design</h2>
+          <p class="sub">Bientôt disponible.</p>
         </div>
 
         <div class="grid work">
           <div class="card reveal pad">
-            <h3 class="h3">Branding</h3>
-            <p class="muted">Identités minimalistes, typographie, systèmes de grille.</p>
+            <h3 class="h3">Brand Systems</h3>
+            <p class="muted">Identité visuelle, typographie et cohérence.</p>
           </div>
           <div class="card reveal pad">
             <h3 class="h3">UI / Motion</h3>
@@ -293,33 +295,28 @@ build portfolio + publish writeups
       <div class="container">
         <div class="section-head">
           <h2 class="h2">Contact</h2>
-          <p class="sub">Simple. Direct. Pas de blabla.</p>
+          <p class="sub">Disponible pour échange, collaboration ou opportunité.</p>
         </div>
 
-        <div class="contact card reveal pad">
-          <div class="contact-row">
-            <span class="contact-k">GitHub</span>
-            <a class="link" href="#" target="_blank" rel="noopener">à remplir →</a>
-          </div>
-          <div class="contact-row">
-            <span class="contact-k">LinkedIn</span>
-            <a class="link" href="#" target="_blank" rel="noopener">à remplir →</a>
-          </div>
-          <div class="contact-row">
-            <span class="contact-k">Email</span>
-            <a class="link" href="mailto:tony@example.com">tony@example.com</a>
-          </div>
+		<div class="contact-row">
+			<span class="contact-k">Website</span>
+			<a class="link" href="#" target="_blank">https://shyro-mb.github.io/</a>
+		</div>
+
+		<div class="contact-row">
+			<span class="contact-k">LinkedIn</span>
+			<a class="link" href="#" target="_blank">Bientôt disponible</a>
+		<div>
 
           <div class="divider"></div>
 
           <p class="muted small">
-            * Ajoute tes liens quand tu veux.  
-            Tu peux aussi mettre des PDF dans <code>assets/files/</code> (CV, reports, etc).
+           Documentation et travaux détaillés bientôt disponibles.
           </p>
         </div>
 
         <footer class="footer">
-          <p class="muted small">© <span id="year"></span> SHIRO — Reverse & Design</p>
+          <p class="muted small">© <span id="year"></span> SHYRO — Silence. Memory. Control.</p>
         </footer>
       </div>
     </section>
