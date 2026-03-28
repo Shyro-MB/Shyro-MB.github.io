@@ -3,33 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Android Application Analysis (Security) · SHIRO</title>
-  <meta name="description" content="Méthodologie d’analyse d’applications Android (audit & sécurité) : acquisition, JADX, APKTool, smali, protections, instrumentation dynamique, rebuild contrôlé." />
-
+  <title>Android Reverse Engineering · SHIRO</title>
+  <meta name="description" content="Workflow complet d'analyse d'applications Android : acquisition, JADX, APKTool, smali, protections, Frida, rebuild." />
+  
   <!-- Style SHIRO -->
   <link rel="stylesheet" href="../css/style.css" />
-
-  <!-- Prism.js -->
+  
+  <!-- Prism.js pour coloration syntaxique -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
-
+  
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-
+  
   <style>
-    .project-page { padding-top: 20px; }
-    .shiro-mini-brand { margin-bottom: 30px; padding-left: 10px; }
-    .shiro-mini-brand .brand-mark { font-size: 1.8rem; font-weight: 700; letter-spacing: .12em; }
-    .shiro-mini-brand .brand-sub { font-family: var(--mono); color: var(--muted); font-size: .85rem; display: block; margin-top: 2px; }
-
-    .back-link { display: inline-block; margin-bottom: 20px; color: var(--muted); text-decoration: none; font-family: var(--mono); font-size: .9rem; padding: 8px 0; }
-    .back-link:hover { color: var(--text); }
-    .back-link::before { content: "← "; opacity: 0.7; }
-
-    .project-layout { margin-top: 0; }
-
-    .shot { margin: 22px 0; }
+    /* Ajustements pour le mode ultra minimal */
+    .project-page {
+      padding-top: 20px;
+    }
+    
+    .shiro-mini-brand {
+      margin-bottom: 30px;
+      padding-left: 10px;
+    }
+    
+    .shiro-mini-brand .brand-mark {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
+    
+    .shiro-mini-brand .brand-sub {
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: .85rem;
+      display: block;
+      margin-top: 2px;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--muted);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: .9rem;
+      padding: 8px 0;
+    }
+    
+    .back-link:hover {
+      color: var(--text);
+    }
+    
+    .back-link::before {
+      content: "← ";
+      opacity: 0.7;
+    }
+    
+    /* Ajustement du layout principal */
+    .project-layout {
+      margin-top: 0;
+    }
+    
+    /* Styles pour les captures d'écran */
+    .shot {
+      margin: 22px 0;
+    }
+    
     .shot img {
       width: 100%;
       border-radius: 14px;
@@ -37,387 +78,545 @@
       box-shadow: 0 0 0 1px rgba(255,255,255,.03), 0 20px 50px rgba(0,0,0,.6);
       transition: transform .4s ease, box-shadow .4s ease;
     }
+    
     .shot img:hover {
       transform: scale(1.015);
       box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 30px 80px rgba(0,0,0,.9);
     }
-    .shot figcaption { margin-top: 10px; font-size: .9rem; color: var(--muted); text-align: center; font-family: var(--mono); }
+    
+    .shot figcaption {
+      margin-top: 10px;
+      font-size: .9rem;
+      color: var(--muted);
+      text-align: center;
+      font-family: var(--mono);
+    }
   </style>
 </head>
 
 <body>
+  <!-- Accessibilité -->
   <a class="skip-link" href="#main">Aller au contenu</a>
 
   <main id="main" class="section project-page">
     <div class="container">
-
+      
+      <!-- Mini branding SHIRO -->
       <div class="shiro-mini-brand">
         <div class="brand-mark">SHIRO</div>
-        <div class="brand-sub">reverse · security · systems</div>
+        <div class="brand-sub">reverse · design · systems</div>
       </div>
-
+      
+      <!-- Lien retour -->
       <a class="back-link" href="../index.html">Retour aux projets</a>
-
-      <!-- HERO -->
+      
+      <!-- HERO / INTRODUCTION -->
       <header class="project-hero card pad reveal" style="margin-bottom:20px;">
         <div class="project-hero-top">
-          <h1 class="h2" style="margin:0;">Android Application Analysis (Security)</h1>
+          <h1 class="h2" style="margin:0;">Android Reverse Engineering</h1>
           <div class="project-badges">
             <span class="badge">2024</span>
-            <span class="badge badge-outline">Méthodologie reproductible (10 étapes)</span>
+            <span class="badge badge-outline">Workflow complet (10 étapes)</span>
           </div>
         </div>
-
+        
         <p class="sub" style="margin-top:10px;">
-          Méthodologie d’analyse technique d’applications Android orientée audit & sécurité :
-          acquisition, vue d’ensemble (JADX), désassemblage (APKTool), analyse smali, identification
-          des protections et instrumentation dynamique. L’objectif est la compréhension des mécanismes
-          internes et la production de documentation exploitable.
+          Analyse systématique des applications Android : acquisition, décompilation, désassemblage, 
+          identification des protections, instrumentation dynamique, modification et rebuild.
+          Une méthodologie reproductible documentée étape par étape.
         </p>
-
+        
         <div class="project-meta-row">
           <span class="chip">JADX</span>
           <span class="chip">APKTool</span>
           <span class="chip">smali</span>
           <span class="chip">Frida</span>
+          <span class="chip">Jiagu</span>
+          <span class="chip">DexGuard</span>
+          <span class="chip">Unity</span>
           <span class="chip">apksigner</span>
-          <span class="chip">Protection fingerprinting</span>
-          <span class="chip">Rebuild contrôlé</span>
         </div>
-
+        
         <div class="note" style="margin-top:14px;">
           <p class="muted small" style="margin:0;">
-            <span class="k">Note éthique</span> : Travail réalisé dans un cadre éducatif et de recherche en sécurité applicative.
-            L’objectif est la compréhension des mécanismes internes afin d’améliorer les pratiques d’audit et de sécurisation.
-            Aucun code propriétaire n’est redistribué et aucune utilisation malveillante n’est encouragée.
+            <span class="k">Note éthique</span> : Ce travail est réalisé à des fins éducatives 
+            et de recherche. L'objectif est la compréhension des mécanismes pour mieux 
+            les auditer et les sécuriser. Aucun code propriétaire n'est redistribué.
           </p>
         </div>
       </header>
-
+      
+      <!-- Layout à deux colonnes -->
       <div class="project-layout">
-
-        <!-- SIDEBAR -->
+        
+        <!-- SIDEBAR GAUCHE -->
         <aside class="project-sidebar card pad">
           <h2 class="h3" style="margin-top:0;">📋 Sommaire</h2>
           <ul class="toc">
             <li><a href="#workflow">Workflow (10 étapes)</a></li>
-            <li><a href="#acquisition">1. Acquisition</a></li>
-            <li><a href="#jadx-initial">2. Vue d’ensemble (JADX)</a></li>
-            <li><a href="#apktool">3. Extraction & désassemblage (APKTool)</a></li>
-            <li><a href="#static-analysis">4. Analyse statique (Smali + JADX)</a></li>
-            <li><a href="#protection">5. Identification des protections</a></li>
-            <li><a href="#frida">6. Instrumentation dynamique</a></li>
-            <li><a href="#patch">7. Observabilité & modification contrôlée</a></li>
-            <li><a href="#rebuild">8. Rebuild & signature</a></li>
-            <li><a href="#testing">9. Tests</a></li>
-            <li><a href="#documentation">10. Documentation & outils</a></li>
+            <li><a href="#acquisition">1. APK Acquisition</a></li>
+            <li><a href="#jadx-initial">2. Initial Static Analysis (JADX)</a></li>
+            <li><a href="#apktool">3. Extraction & Désassemblage (APKTool)</a></li>
+            <li><a href="#static-analysis">4. Static Analysis (Smali + JADX)</a></li>
+            <li><a href="#protection">5. Protection Identification</a></li>
+            <li><a href="#frida">6. Dynamic Analysis (Frida)</a></li>
+            <li><a href="#patch">7. Patch & Modification (Smali)</a></li>
+            <li><a href="#rebuild">8. Rebuild & Sign</a></li>
+            <li><a href="#testing">9. Testing</a></li>
+            <li><a href="#documentation">10. Documentation & Outils</a></li>
           </ul>
-
+          
           <h2 class="h3" style="margin-top:20px;">🛠️ Compétences</h2>
           <div class="tags">
-            <span class="tag">Analyse APK</span>
             <span class="tag">JADX</span>
             <span class="tag">APKTool</span>
             <span class="tag">smali</span>
             <span class="tag">Frida</span>
-            <span class="tag">Android internals</span>
-            <span class="tag">Security mindset</span>
+            <span class="tag">Jiagu</span>
+            <span class="tag">DexGuard</span>
+            <span class="tag">Unity</span>
+            <span class="tag">apksigner</span>
           </div>
-
+          
           <h2 class="h3" style="margin-top:20px;">📦 Téléchargements</h2>
           <div class="downloads">
             <a class="download-link" href="../tools/apk-info-extractor.py" download>📥 apk-info-extractor.py</a>
             <a class="download-link" href="../tools/manifest-analyzer.py" download>📥 manifest-analyzer.py</a>
             <a class="download-link" href="../tools/smali-pattern-matcher.py" download>📥 smali-pattern-matcher.py</a>
-            <a class="download-link" href="../tools/frida-scripts/dex-dumper.js" download>📥 dex-dumper.js (analyse mémoire)</a>
+            <a class="download-link" href="../tools/frida-scripts/dex-dumper.js" download>📥 dex-dumper.js (Jiagu)</a>
           </div>
         </aside>
-
-        <!-- ARTICLE -->
+        
+        <!-- ARTICLE PRINCIPAL -->
         <article class="project-article">
-
+          
           <!-- WORKFLOW -->
           <section id="workflow" class="card pad reveal">
             <h2 class="h3">Workflow en 10 étapes</h2>
             <div class="mono-box">
               <pre><code class="language-none">┌─────────────────────────────────────────────────────────────┐
-│                 ANDROID APP ANALYSIS WORKFLOW                │
+│                    WORKFLOW COMPLET                          │
 ├─────────────────────────────────────────────────────────────┤
-│  1. Acquisition              → APK depuis device/source      │
+│  1. APK Acquisition          → Récupération de l'APK        │
+│     (adb pull / Termux)                                      │
 │                                                              │
-│  2. Vue d'ensemble (JADX)    → Cartographie rapide           │
-│     - structure, libs, signaux de protections                │
+│  2. Initial Static Analysis  → Vue d'ensemble rapide        │
+│     Tool: JADX                 (identification protections) │
 │                                                              │
-│  3. Extraction (APKTool)     → res + manifest + smali        │
+│  3. Extraction & Désassemblage → APK → smali + ressources   │
+│     Tool: APKTool               (dex → smali)               │
 │                                                              │
-│  4. Analyse statique         → Logique & flux d'exécution    │
-│     - JADX (lisible) + smali (bas niveau)                    │
+│  4. Static Analysis           → Analyse approfondie         │
+│     Tools: JADX, Smali          (logique, patterns)         │
 │                                                              │
-│  5. Protection fingerprinting→ Jiagu / DexGuard / Unity ...  │
+│  5. Protection Identification → Détection précise           │
+│     Ex: Jiagu, DexGuard, Unity IL2CPP                       │
 │                                                              │
-│  6. Instrumentation dynamique→ Observation runtime (Frida)   │
+│  6. Dynamic Analysis          → Contournement si nécessaire │
+│     Tools: Frida, Dex Dumper    (dump mémoire)              │
 │                                                              │
-│  7. Observabilité contrôlée  → Logging/trace ciblée          │
+│  7. Patch & Modification      → Modification du smali       │
+│     Tool: Smali                 (bytecode)                  │
 │                                                              │
-│  8. Rebuild & signature      → APK reconstruit & signé       │
+│  8. Rebuild & Sign            → Reconstruction de l'APK     │
+│     Tools: APKTool, apksigner   (smali → dex → APK)         │
 │                                                              │
-│  9. Testing                  → validation sur appareil       │
+│  9. Testing                   → Vérification sur appareil   │
+│     (adb install)                                            │
 │                                                              │
-│ 10. Documentation            → writeup + outils              │
+│ 10. Documentation             → Writeup + outils            │
 └─────────────────────────────────────────────────────────────┘</code></pre>
             </div>
           </section>
-
-          <!-- 1. ACQUISITION -->
+          
+          <!-- 1. APK ACQUISITION -->
           <section id="acquisition" class="card pad reveal">
-            <h2 class="h3">1. Acquisition</h2>
+            <h2 class="h3">1. APK Acquisition</h2>
             <p class="muted">
-              Récupérer l’APK depuis l’appareil ou une source fiable, puis vérifier l’intégrité et le contexte
-              (version, split APK, signature, etc.).
+              Première étape : récupérer le fichier APK depuis l'appareil ou une source fiable.
             </p>
-
+            
             <h3 class="h3">Méthodes</h3>
             <ul class="list">
               <li><span class="k">Via ADB</span> — depuis un PC connecté</li>
               <li><span class="k">Via Termux</span> — directement sur l'appareil</li>
             </ul>
 
-            <pre><code class="language-bash">adb shell pm list packages | grep "nom"
+            <pre><code class="language-bash"># ADB : lister les packages
+adb shell pm list packages | grep "nom"
+
+# Obtenir le chemin exact
 adb shell pm path com.example.app
-adb pull /data/app/com.example.app-xxx/base.apk</code></pre>
+
+# Pull l'APK vers le PC
+adb pull /data/app/com.example.app-xxx/base.apk
+
+# Termux : copie locale
+pm path com.example.app
+cp /data/app/com.example.app-xxx/base.apk /sdcard/</code></pre>
 
             <div class="note">
               <p class="muted small">
-                <span class="k">Astuce</span> : pour les applications splitées, <code>pm path</code> peut retourner plusieurs APKs.
+                <span class="k">Astuce</span> : Pour les applications splitées, la commande <code>pm path</code> peut retourner plusieurs chemins.
               </p>
             </div>
           </section>
-
-          <!-- 2. JADX -->
+          
+          <!-- 2. INITIAL STATIC ANALYSIS (JADX) -->
           <section id="jadx-initial" class="card pad reveal">
-            <h2 class="h3">2. Vue d’ensemble (JADX)</h2>
+            <h2 class="h3">2. Initial Static Analysis (JADX)</h2>
             <p class="muted">
-              Étape rapide de cartographie : structure, bibliothèques natives, signaux d’obfuscation/protection,
-              composants Android, points d’entrée, etc.
+              Pourquoi cette étape est cruciale : avant de plonger dans les détails,
+              <strong>JADX</strong> permet d'avoir une <strong>vue d'ensemble rapide</strong>
+              du code Java. En quelques minutes, on peut identifier :
             </p>
-
+            
             <ul class="list">
-              <li>Présence d’un <strong>stub</strong> / code minimal</li>
-              <li>Indices natifs via <code>System.loadLibrary()</code></li>
-              <li>Noms de classes/paquets atypiques</li>
-              <li>Organisation globale et surface d’attaque</li>
+              <li>La présence d'un <strong>stub</strong> (code minimal)</li>
+              <li>Des appels à <code>System.loadLibrary()</code> (indice de protection native)</li>
+              <li>Des noms de classes suspects (loader, protect, etc.)</li>
+              <li>La structure générale du package</li>
             </ul>
 
-            <h3 class="h3">Exemple : indice de charge native</h3>
-            <pre><code class="language-java">public class MainActivity extends Activity {
-  static { System.loadLibrary("native_core"); }
-  @Override protected void onCreate(Bundle b) {
-    super.onCreate(b);
-    init();
-  }
-  private native void init();
+            <h3 class="h3">Exemple concret : détection de Jiagu</h3>
+            <pre><code class="language-java">// Code typique d'un stub Jiagu
+public class MainActivity extends Activity {
+    static {
+        System.loadLibrary("jiagu");  // ← INDICE FORT
+    }
+    
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        nativeInit();  // ← Le vrai code est ailleurs
+    }
+    
+    private native void nativeInit();  // ← Méthode native
 }</code></pre>
+
+            <figure class="shot">
+              <a href="../assets/images/jadx-overview.webp" target="_blank">
+                <img src="../assets/images/jadx-overview.webp" alt="Interface JADX" loading="lazy">
+              </a>
+              <figcaption>JADX : décompilation dex → Java</figcaption>
+            </figure>
 
             <div class="note">
               <p class="muted small">
-                <span class="k">Note</span> : JADX <strong>décompile</strong> (dex → Java). Pour le bas niveau et les modifications : smali.
+                <span class="k">Note</span> : JADX <strong>décompile</strong> (dex → Java). 
+                Ce n'est pas du désassemblage (dex → smali), c'est un niveau plus haut.
               </p>
             </div>
           </section>
-
-          <!-- 3. APKTOOL -->
+          
+          <!-- 3. EXTRACTION & DÉSASSEMBLAGE (APKTOOL) -->
           <section id="apktool" class="card pad reveal">
-            <h2 class="h3">3. Extraction & désassemblage (APKTool)</h2>
+            <h2 class="h3">3. Extraction & Désassemblage (APKTool)</h2>
             <p class="muted">
-              Extraction des ressources + manifest, et désassemblage du bytecode en smali (lecture fine du flux d’exécution).
+              APKTool remplit deux fonctions essentielles :
             </p>
+            <ul class="list">
+              <li><span class="k">Extraire</span> — décompresser l'APK pour accéder aux fichiers (ressources, manifest, etc.)</li>
+              <li><span class="k">Désassembler</span> — transformer les <code>classes.dex</code> en <strong>smali</strong> (bytecode lisible)</li>
+            </ul>
 
-            <pre><code class="language-bash">apktool d app.apk -o app_sources/</code></pre>
+            <pre><code class="language-bash"># Désassemblage (dex → smali) + extraction
+apktool d app.apk -o app_sources/
 
-            <pre><code class="language-none">app_sources/
-├── smali/
-├── smali_classes2/
-├── res/
-├── AndroidManifest.xml
-└── apktool.yml</code></pre>
+# Structure obtenue
+app_sources/
+├── smali/                    # Code smali (résultat du désassemblage)
+├── smali_classes2/           # DEX supplémentaires désassemblés
+├── res/                      # Ressources extraites
+├── AndroidManifest.xml       # Manifest extrait et décodé
+└── apktool.yml               # Métadonnées</code></pre>
+
+            <figure class="shot">
+              <a href="../assets/images/apktool-output.webp" target="_blank">
+                <img src="../assets/images/apktool-output.webp" alt="Structure APKTool" loading="lazy">
+              </a>
+              <figcaption>Dossier généré par APKTool (smali + ressources)</figcaption>
+            </figure>
 
             <div class="note">
               <p class="muted small">
-                <span class="k">Précision</span> : APKTool <strong>désassemble</strong> (dex → smali). La vue Java vient de <strong>jadx</strong>.
+                <span class="k">Précision</span> : APKTool ne <strong>décompile pas</strong> (il ne produit pas de Java).
+                Il <strong>désassemble</strong> le bytecode en smali. Pour voir du Java, on utilise <strong>jadx</strong>.
               </p>
             </div>
           </section>
-
-          <!-- 4. STATIC ANALYSIS -->
+          
+          <!-- 4. STATIC ANALYSIS (SMALI + JADX) -->
           <section id="static-analysis" class="card pad reveal">
-            <h2 class="h3">4. Analyse statique (Smali + JADX)</h2>
+            <h2 class="h3">4. Static Analysis (Smali + JADX)</h2>
             <p class="muted">
-              Analyse détaillée des flux d’exécution et des contrôles applicatifs. Les deux vues sont complémentaires :
-              <strong>JADX</strong> pour la lecture, <strong>smali</strong> pour la précision bas niveau.
+              Maintenant qu'on a les sources, on analyse en détail avec deux outils complémentaires :
             </p>
+            <ul class="list">
+              <li><span class="k">JADX</span> — pour comprendre la logique Java (plus lisible)</li>
+              <li><span class="k">Smali</span> — pour les détails bas niveau et les modifications</li>
+            </ul>
 
-            <h3 class="h3">Exemple : analyse d’un mécanisme de validation applicatif</h3>
-
+            <h3 class="h3">Exemple : analyse d'une vérification de licence</h3>
+            
             <h4>Vue JADX (Java)</h4>
-            <pre><code class="language-java">// Exemple simplifié : contrôle applicatif (feature flag / validation interne)
-if (validator.isAllowed(context)) {
-  enableFeature();
-} else {
-  showRestrictedState();
+            <pre><code class="language-java">if (inputKey.equals(validKey)) {
+    unlockPremium();
 }</code></pre>
 
-            <h4>Vue Smali (flux logique correspondant)</h4>
-            <pre><code class="language-smali">invoke-virtual {v0, p0}, Lcom/example/Validator;->isAllowed(Ljava/lang/Object;)Z
-move-result v1
-if-eqz v1, :cond_restricted
-invoke-direct {p0}, Lcom/example/MainActivity;->enableFeature()V
-goto :end
-:cond_restricted
-invoke-direct {p0}, Lcom/example/MainActivity;->showRestrictedState()V
-:end</code></pre>
-          </section>
+            <h4>Vue Smali correspondante</h4>
+            <pre><code class="language-smali">iget-object v0, p0, Lcom/example/MainActivity;->inputKey:Ljava/lang/String;
+const-string v1, "XK9-JM4-PL2"
+invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+move-result v2
+if-eqz v2, :cond_not_equal
+invoke-direct {p0}, Lcom/example/MainActivity;->unlockPremium()V
+:cond_not_equal</code></pre>
 
-          <!-- 5. PROTECTION -->
+            <figure class="shot">
+              <a href="../assets/images/smali-code.webp" target="_blank">
+                <img src="../assets/images/smali-code.webp" alt="Code smali" loading="lazy">
+              </a>
+              <figcaption>Smali : bytecode lisible (MT Manager)</figcaption>
+            </figure>
+          </section>
+          
+          <!-- 5. PROTECTION IDENTIFICATION -->
           <section id="protection" class="card pad reveal">
-            <h2 class="h3">5. Identification des protections</h2>
+            <h2 class="h3">5. Protection Identification</h2>
             <p class="muted">
-              Fingerprinting des protections et des architectures (obfuscation, loaders, Unity, etc.) pour orienter la suite de l’analyse.
+              À ce stade, on a suffisamment d'éléments pour identifier précisément
+              la protection utilisée.
             </p>
 
-            <h3 class="h3">Exemples de signaux</h3>
+            <h3 class="h3">Jiagu 360</h3>
             <ul class="list">
-              <li><span class="k">Charge native</span> : libs spécifiques, init natif, stubs minimalistes</li>
-              <li><span class="k">Obfuscation</span> : classes/strings atypiques, packages artificiels</li>
-              <li><span class="k">Unity</span> : <code>libil2cpp.so</code>, structure assets</li>
+              <li><span class="k">Indices</span> — stub minimal, libjiagu.so, System.loadLibrary("jiagu")</li>
+              <li><span class="k">Conséquence</span> — Le vrai DEX n'est pas sur disque, nécessite Frida</li>
             </ul>
-          </section>
 
-          <!-- 6. FRIDA -->
+            <h3 class="h3">DexGuard</h3>
+            <ul class="list">
+              <li><span class="k">Indices</span> — packages com/secneo/, classes obfusquées, chaînes chiffrées</li>
+              <li><span class="k">Conséquence</span> — Analyse dynamique souvent nécessaire</li>
+            </ul>
+
+            <h3 class="h3">Unity IL2CPP</h3>
+            <ul class="list">
+              <li><span class="k">Indices</span> — libil2cpp.so, dossier assets/bin/Data/, pas de managed/</li>
+              <li><span class="k">Conséquence</span> — Analyse native avec Ghidra</li>
+            </ul>
+
+            <h3 class="h3">Unity Mono</h3>
+            <ul class="list">
+              <li><span class="k">Indices</span> — dossier managed/ avec Assembly-CSharp.dll</li>
+              <li><span class="k">Conséquence</span> — Analyse avec dnSpy / ILSpy</li>
+            </ul>
+
+            <div class="note">
+              <p class="muted small">
+                <span class="k">Important</span> — L'identification guide la suite :
+                Jiagu → Frida ; Unity IL2CPP → Ghidra ; etc.
+              </p>
+            </div>
+          </section>
+          
+          <!-- 6. DYNAMIC ANALYSIS (FRIDA) -->
           <section id="frida" class="card pad reveal">
-            <h2 class="h3">6. Instrumentation dynamique (Frida)</h2>
+            <h2 class="h3">6. Dynamic Analysis (Frida + Dex Dumper)</h2>
             <p class="muted">
-              L’instrumentation dynamique sert à <strong>observer</strong> le comportement runtime lorsque l’analyse statique ne suffit pas
-              (chargements dynamiques, logique déplacée, etc.).
+              Pour les protections comme Jiagu qui chargent le code en mémoire,
+              l'analyse statique ne suffit pas. On passe à l'<strong>instrumentation dynamique</strong>.
             </p>
 
-            <h3 class="h3">Installation (exemple)</h3>
-            <pre><code class="language-bash">pip install frida-tools</code></pre>
+            <h3 class="h3">Installation de Frida</h3>
+            <pre><code class="language-bash"># Sur Termux
+pkg update && pkg upgrade
+pkg install python
+pip install frida-tools
 
-            <div class="note">
-              <p class="muted small">
-                <span class="k">But</span> : observation & compréhension (traces, hooks, timings), dans un cadre d’audit et de recherche.
-              </p>
-            </div>
+# Sur Windows
+pip install frida-tools frida-dexdump</code></pre>
+
+            <h3 class="h3">Script dex-dumper.js</h3>
+            <p class="muted">
+              Basé sur les travaux de <strong>Hluwa</strong> (FRIDA-DEXDump) et adapté
+              par <strong>@ApkUnpacker</strong> pour Termux.
+            </p>
+
+            <pre><code class="language-javascript">/*
+Initially Created By Hluwa
+https://github.com/hluwa/FRIDA-DEXDump
+Modified By @ApkUnpacker for Termux
+*/
+
+function ProcessName() {
+    var openPtr = Module.getExportByName('libc.so', 'open');
+    var open = new NativeFunction(openPtr, 'int', ['pointer', 'int']);
+    var readPtr = Module.getExportByName('libc.so', 'read');
+    var read = new NativeFunction(readPtr, 'int', ['int', 'pointer', 'int']);
+    var closePtr = Module.getExportByName('libc.so', 'close');
+    var close = new NativeFunction(closePtr, 'int', ['int']);
+    var path = Memory.allocUtf8String('/proc/self/cmdline');
+    var fd = open(path, 0);
+    if (fd != -1) {
+        var buffer = Memory.alloc(0x1000);
+        var result = read(fd, buffer, 0x1000);
+        close(fd);
+        result = ptr(buffer).readCString();
+        return result;
+    }
+    return -1;
+}
+
+function DumpDex() {
+    var result = [];
+    Process.enumerateRanges('r--').forEach(function(range) {
+        try {
+            Memory.scanSync(range.base, range.size, "64 65 78 0a 30 ?? ?? 00").forEach(function(match) {
+                // [Code complet dans le fichier téléchargeable]
+            });
+        } catch (e) {}
+    });
+    return result;
+}
+
+setTimeout(function() {
+   DumpDex();
+}, 2000);</code></pre>
+
+            <h3 class="h3">Exécution</h3>
+            <pre><code class="language-bash"># Lancer l'application avec Frida
+frida -U -f com.example.app -s dex-dumper.js --no-pause
+
+# Résultat : des fichiers .dex sont créés dans /data/data/com.example.app/
+# On peut les récupérer et les analyser avec JADX</code></pre>
+
+            <figure class="shot">
+              <a href="../assets/images/frida-console.webp" target="_blank">
+                <img src="../assets/images/frida-console.webp" alt="Console Frida" loading="lazy">
+              </a>
+              <figcaption>Frida en action : dump du DEX</figcaption>
+            </figure>
           </section>
-
-          <!-- 7. OBSERVABILITÉ -->
+          
+          <!-- 7. PATCH & MODIFICATION (SMALI) -->
           <section id="patch" class="card pad reveal">
-            <h2 class="h3">7. Observabilité & modification contrôlée</h2>
+            <h2 class="h3">7. Patch & Modification (Smali)</h2>
             <p class="muted">
-              Dans un contexte d’audit, il est souvent utile d’ajouter de l’observabilité (logging/trace) pour confirmer un flux d’exécution,
-              mesurer des conditions et documenter le comportement.
+              Une fois le code compris (après dump si nécessaire), on peut modifier
+              le comportement en éditant le smali.
             </p>
 
-            <h3 class="h3">Exemple : ajout de trace (confirmation de branche)</h3>
+            <h3 class="h3">Exemple : bypass de vérification de licence</h3>
+            
+            <h4>Code original</h4>
+            <pre><code class="language-smali">invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+move-result v2
+if-eqz v2, :cond_not_equal   # Si v2 == 0, saute le déblocage
+invoke-direct {p0}, Lcom/example/MainActivity;->unlockPremium()V
+:cond_not_equal</code></pre>
 
-            <h4>Avant</h4>
-            <pre><code class="language-smali">invoke-virtual {v0, p0}, Lcom/example/Validator;->isAllowed(Ljava/lang/Object;)Z
-move-result v1
-if-eqz v1, :cond_restricted</code></pre>
-
-            <h4>Après (trace de diagnostic)</h4>
-            <pre><code class="language-smali">invoke-virtual {v0, p0}, Lcom/example/Validator;->isAllowed(Ljava/lang/Object;)Z
-move-result v1
-
-# Observabilité : log de diagnostic (ex. "allowed=true/false")
-const-string v2, "SHIRO-AUDIT"
-if-eqz v1, :cond_log_false
-const-string v3, "allowed=true"
-goto :cond_log
-:cond_log_false
-const-string v3, "allowed=false"
-:cond_log
-invoke-static {v2, v3}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
-
-if-eqz v1, :cond_restricted</code></pre>
-
-            <div class="note">
-              <p class="muted small">
-                <span class="k">Pourquoi</span> : confirmer un comportement, produire une preuve d’exécution, améliorer la documentation d’audit.
-              </p>
-            </div>
+            <h4>Code patché (force le déblocage)</h4>
+            <pre><code class="language-smali">invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+move-result v2
+const/4 v2, 0x1               # Force v2 = 1 (true)
+if-eqz v2, :cond_not_equal    # Ne saute plus
+invoke-direct {p0}, Lcom/example/MainActivity;->unlockPremium()V
+:cond_not_equal</code></pre>
           </section>
-
-          <!-- 8. REBUILD -->
+          
+          <!-- 8. REBUILD & SIGN -->
           <section id="rebuild" class="card pad reveal">
-            <h2 class="h3">8. Rebuild & signature</h2>
+            <h2 class="h3">8. Rebuild & Sign</h2>
             <p class="muted">
-              Reconstruction contrôlée après modifications (ressources + smali → APK), puis signature.
+              Après modifications, on reconstruit l'APK et on le signe.
             </p>
 
-            <pre><code class="language-bash">apktool b app_sources/ -o modified-unsigned.apk
+            <pre><code class="language-bash"># Rebuild avec APKTool (assemble smali → dex + reconstruit APK)
+apktool b app_sources/ -o modified-unsigned.apk
+
+# Générer une keystore (si pas déjà fait)
+keytool -genkey -v -keystore my-key.keystore -alias my-alias -keyalg RSA -keysize 2048 -validity 10000
+
+# Signer avec apksigner
 apksigner sign --ks my-key.keystore modified-unsigned.apk</code></pre>
 
             <div class="note">
               <p class="muted small">
-                <span class="k">Note</span> : <code>apktool b</code> assemble le smali en dex puis reconstruit l’APK.
+                <span class="k">Note</span> : <code>apktool b</code> <strong>assemble</strong> le smali en dex,
+                puis reconstruit l'APK complet.
               </p>
             </div>
           </section>
-
+          
           <!-- 9. TESTING -->
           <section id="testing" class="card pad reveal">
-            <h2 class="h3">9. Tests</h2>
-            <p class="muted">Validation sur appareil / environnement de test.</p>
-
-            <pre><code class="language-bash">adb install modified.apk</code></pre>
-          </section>
-
-          <!-- 10. DOC -->
-          <section id="documentation" class="card pad reveal">
-            <h2 class="h3">10. Documentation & outils</h2>
+            <h2 class="h3">9. Testing</h2>
             <p class="muted">
-              Production d’un write-up clair et d’outils d’analyse pour automatiser la collecte d’indicateurs.
+              Installation et test sur appareil.
+            </p>
+
+            <pre><code class="language-bash"># Désinstaller la version originale (si présente)
+adb uninstall com.example.app
+
+# Installer la version modifiée
+adb install modified.apk</code></pre>
+          </section>
+          
+          <!-- 10. DOCUMENTATION & OUTILS -->
+          <section id="documentation" class="card pad reveal">
+            <h2 class="h3">10. Documentation & Outils</h2>
+            <p class="muted">
+              La dernière étape est cruciale : documenter le processus et partager
+              les outils développés.
             </p>
 
             <h3 class="h3">Outils développés</h3>
             <div class="tools-grid">
               <div class="tool-card">
                 <h4>apk-info-extractor.py</h4>
-                <p class="muted">Extraction de métadonnées APK.</p>
+                <p class="muted">Extraction des métadonnées d'un APK.</p>
                 <pre><code class="language-bash">python apk-info-extractor.py app.apk</code></pre>
               </div>
-
+              
               <div class="tool-card">
                 <h4>manifest-analyzer.py</h4>
-                <p class="muted">Analyse AndroidManifest.xml.</p>
+                <p class="muted">Analyse du AndroidManifest.xml.</p>
                 <pre><code class="language-bash">python manifest-analyzer.py app.apk</code></pre>
               </div>
-
+              
               <div class="tool-card">
                 <h4>smali-pattern-matcher.py</h4>
-                <p class="muted">Recherche de patterns smali.</p>
+                <p class="muted">Recherche de patterns dans le smali.</p>
                 <pre><code class="language-bash">python smali-pattern-matcher.py ./smali/</code></pre>
               </div>
-
+              
               <div class="tool-card">
                 <h4>dex-dumper.js</h4>
-                <p class="muted">Script Frida (analyse mémoire / collecte d’artefacts).</p>
+                <p class="muted">Script Frida pour Jiagu.</p>
                 <pre><code class="language-bash">frida -U -f com.app -l dex-dumper.js</code></pre>
               </div>
             </div>
-          </section>
 
+            <figure class="shot">
+              <a href="../assets/images/python-script.webp" target="_blank">
+                <img src="../assets/images/python-script.webp" alt="Script Python" loading="lazy">
+              </a>
+              <figcaption>Exécution d'un script d'analyse</figcaption>
+            </figure>
+          </section>
         </article>
       </div>
-
+      
+      <!-- Footer -->
       <footer class="footer" style="margin-top:40px;">
-        <p>© <span id="year">2026</span> SHIRO — security & reverse engineering portfolio</p>
+        <p>© <span id="year">2026</span> SHIRO — reverse engineering portfolio</p>
       </footer>
-
+      
     </div>
   </main>
-
+  
+  <!-- Scripts -->
   <script src="../js/main.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
